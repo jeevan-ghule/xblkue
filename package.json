@@ -1,0 +1,40 @@
+{
+  "name": "xblkue",
+  "version": "0.1.0",
+  "description": "Simple wrapper for Kue producer/consumer to support XBLog's hierarchical logging.",
+  "main": "index.js",
+  "engines": {
+    "node": ">= 10"
+  },
+  "scripts": {
+    "test": "nyc mocha"
+  },
+  "bin": {
+    "xblkue": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xblockchainlabs/xblkue.git"
+  },
+  "keywords": [
+    "Kue",
+    "logging",
+    "tracer"
+  ],
+  "author": "XBlockchain Labs; Sourav Ray <sourav@xblockchainlabs.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xblockchainlabs/xblkue/issues"
+  },
+  "homepage": "https://github.com/xblockchainlabs/xblkue#readme",
+  "dependencies": {
+    "kue": "^0.11.6",
+    "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
+    "xblog": "https://github.com/xblockchainlabs/xblog"
+  }
+}
