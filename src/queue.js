@@ -53,7 +53,6 @@ module.exports.createQueue = (_logger=null, options={}) => {
       on: (...args) => {
         return queue.on(...args);
       },
-      .0
 
       shutdown: (...args) => {
         return queue.shutdown(...args);
