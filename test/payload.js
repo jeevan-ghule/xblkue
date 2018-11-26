@@ -6,11 +6,12 @@ const Payload = require('../src/payload');
 describe('PAYLOAD', function() {
   it('Check if object is creating', () => {
     const _payload = Payload.createPayload();
-    console.log(_payload);
     _payload.should.be.an('object');
     _payload.should.respondTo('add');
     _payload.should.respondTo('lcos');
     _payload.should.respondTo('dataSet');
+    _payload.should.not.respondTo('_serLcos');
+    _payload.should.not.respondTo('_dserLcos');
   })
   it('Check if object is adding payload properly', () => {
     let _co0 = { meta: { coid: '6085f97a-ba0a-454b-9ad5-a0f40bc8b010' }}
@@ -36,9 +37,10 @@ describe('PAYLOAD', function() {
   it('addCollection method should  add a collection', () => {
     let _co0 = { meta: { coid: '6085f97a-ba0a-454b-9ad5-a0f40bc8b010' }}
       , _co1 = { meta: { coid: '6085f97a-ba0a-454b-9ad5-a0f40bc8b023' }}
+      , co = [_co0, _co1]
       , _objs = [{ name: 'sourav', id:"1" }, { name: 'gourav', id:"2" }];
     const _payload = Payload.createPayload();
-    var isAdded = _payload.addCollection(_objs, _co0, _co1);
+    var isAdded = _payload.addCollection(_objs, ...co);
     isAdded.should.be.true;
     expect(_payload.lcos()).to.be.an('array');
     expect(_payload.lcos()).to.have.lengthOf(2);
@@ -161,7 +163,7 @@ describe('PAYLOAD', function() {
     _payload0.add(_obj2,_co2);
 
     const _serializedPayload =_payload0._serialize();
-    const _payload1 = Payload.deserializePayload(_serializedPayload);
+    const _payload1 = Payload.deserializePayload(null, _serializedPayload);
 
     _payload0.dataSet().forEach(obj => {
       expect(obj).to.be.an('object');

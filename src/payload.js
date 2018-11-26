@@ -1,13 +1,16 @@
 const _corelId = Symbol('coid')
+  , _serLcos = Symbol('_serLcos_')
+  , _dserLcos = Symbol('_dserLcos_')
   , _ = require('lodash')
   , utils = require('./utils') ;
 
 class Payload {
-  constructor(_seralizedObject) {
+  constructor(_logger, _seralizedObject) {
     if(!!_seralizedObject) {
       this._deserialize(_seralizedObject);
     }
     this. _initialize();
+    this._logger = _logger;
   }
 
   _initialize() {
@@ -20,21 +23,21 @@ class Payload {
   }
 
   _serialize() {
-    const __lcos= this._serLcos(this._lcos);
+    const __lcos= this[_serLcos](this._lcos);
     const __data = JSON.stringify(this._data);
     return { lcos: __lcos, data: __data }
   }
 
   _deserialize(_seralizedObject) {
     if(!!_seralizedObject.lcos) {
-      this._lcos = new Map(this._dserLcos(_seralizedObject.lcos));
+      this._lcos = new Map(this[_dserLcos](_seralizedObject.lcos));
     }
     if(!!_seralizedObject.data) {
       this._data = Array.from(JSON.parse(_seralizedObject.data));
     }  
   }
 
-  _serLcos(__lcos) {
+  [_serLcos](__lcos) {
     let __lcosArr = [];
     __lcos.forEach((value, key) => { 
       // this function is placeholder for CO object serelize call
@@ -43,7 +46,7 @@ class Payload {
     return JSON.stringify(__lcosArr);
   }
 
-  _dserLcos(__lcosStr) {
+  [_dserLcos](__lcosStr) {
     let __lcosArr = JSON.parse(__lcosStr);
     // this function is placeholder for CO object deserelize call
     return __lcosArr.map(([key,value]) => [key,JSON.parse(value)]);
@@ -116,5 +119,5 @@ class Payload {
   }
 }
 
-module.exports.createPayload = () => new Payload();
-module.exports.deserializePayload = (_seralizedObject) => new Payload(_seralizedObject);
+module.exports.createPayload = (_logger=null) => new Payload();
+module.exports.deserializePayload = (_logger=null, _seralizedObject) => new Payload(_seralizedObject);

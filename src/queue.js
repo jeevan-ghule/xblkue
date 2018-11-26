@@ -2,7 +2,7 @@ const kue = require('kue')
   , Payload  = require('./payload')
   , _ = require('lodash');
 
-module.exports = (_logger=null, options={}) => {
+module.exports.createQueue = (_logger=null, options={}) => {
   const logger = _logger,
     queue = kue.createQueue(options);
 
