@@ -116,5 +116,5 @@ class Payload {
   }
 }
 
-module.exports.createPayload = (_logger=null) => new Payload();
+module.exports.createPayload = (_logger=null) => new Payload(_logger);
 module.exports.deserializePayload = (_logger=null, _seralizedObject) => new Payload(_logger, _seralizedObject);
