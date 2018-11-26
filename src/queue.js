@@ -15,7 +15,7 @@ module.exports.createQueue = (_logger=null, options={}) => {
 
       create: (topic, data) => {
         const payload = Payload.createPayload(_logger);
-        if(_.isPlainObject(data) && _.isPlainObject(cos)) {
+        if(_.isPlainObject(data) && _.isObject(cos)) {
           payload.add(data, cos);
         } else if(utils.isPlainArray(data) && utils.isPlainArray(cos)) {
           payload._addLcos(cos);
