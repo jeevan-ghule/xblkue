@@ -22,14 +22,20 @@ module.exports.createQueue = (_logger=null, options={}) => {
         const _queue =  queue.create(topic, { _payload: payload._serialize() });
         return _queue;
       },
-      process: (topic, fnc) => {
+      process: (...arg) => {
+        if(arg..length == 0){
+           throw Error('Cannot process the request');
+        }
+        const fnc = arg[arg.length -1]
+          , topic =. args[0];
         const _process = (job, done) => {
           const payload = Payload.deserializePayload(_logger,job.data._payload);
           job['data']['payload'] = payload;
           delete job.data._payload;
           return fnc(job, done);
         } 
-        return queue.process(topic, _process);
+        arg[arg.length -1] = fnc;
+        return queue.process(...arg);
       },
       on: (...args) => {
         return queue.on(...args);
