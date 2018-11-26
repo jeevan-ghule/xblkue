@@ -1,5 +1,4 @@
-const _corelId = Symbol('coid')
-  , _serLcos = Symbol('_serLcos_')
+const _serLcos = Symbol('_serLcos_')
   , _dserLcos = Symbol('_dserLcos_')
   , _ = require('lodash')
   , utils = require('./utils') ;
@@ -55,7 +54,7 @@ class Payload {
   add (obj, co)  {
     if(_.isPlainObject(obj)){
       this._lcos.set(co.meta.coid,co);
-      obj[_corelId] = co.meta.coid;
+      obj['_corel_id_'] = co.meta.coid;
       this._data.push(obj);
       return true;
     }
@@ -67,7 +66,7 @@ class Payload {
       && collection.length == cos.length) {
       collection.forEach( (obj,idx) => {
         this._lcos.set(cos[idx].meta.coid,cos[idx]);
-        obj[_corelId] = cos[idx].meta.coid;
+        obj['_corel_id_'] = cos[idx].meta.coid;
       })
       this._data.push(collection);
       return true;
@@ -120,4 +119,4 @@ class Payload {
 }
 
 module.exports.createPayload = (_logger=null) => new Payload();
-module.exports.deserializePayload = (_logger=null, _seralizedObject) => new Payload(_seralizedObject);
+module.exports.deserializePayload = (_logger=null, _seralizedObject) => new Payload(_logger, _seralizedObject);

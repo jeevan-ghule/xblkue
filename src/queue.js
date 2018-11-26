@@ -12,20 +12,21 @@ module.exports.createQueue = (_logger=null, options={}) => {
         if(cos.length == 0) {
           throw Error('Cannot initialize with Log Corelatrion Object(s)');
         }
-        const payload = Payload.createPayload();
+        const payload = Payload.createPayload(_logger);
         if(_.isPlainObject(data)) {
           payload.add(data, cos[0]);
         } else {
           payload._addLcos(cos);
           payload._addData(data);
         }
-        return queue.create(topic, { _payload: payload._serialize() });
+        const _queue =  queue.create(topic, { _payload: payload._serialize() });
+        return _queue;
       },
       process: (topic, fnc) => {
         const _process = (job, done) => {
-          const payload = Payload.createPayload(job._payload);
-          job['payload'] = payload;
-          delete job._payload;
+          const payload = Payload.deserializePayload(_logger,job.data._payload);
+          job['data']['payload'] = payload;
+          delete job.data._payload;
           return fnc(job, done);
         } 
         return queue.process(topic, _process);
