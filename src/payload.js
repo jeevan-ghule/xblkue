@@ -39,14 +39,14 @@ class Payload {
   [_serLcos](__lcos) {
     let __lcosArr = [];
     __lcos.forEach((value, key) => { 
-      __lcosArr.push([key,_logger.util().serialize(value)])
+      __lcosArr.push([key,this._logger.util().serialize(value)])
     });
     return JSON.stringify(__lcosArr);
   }
 
   [_dserLcos](__lcosStr) {
     let __lcosArr = JSON.parse(__lcosStr);
-    return __lcosArr.map(([key,value]) => [key, _logger.util().deserialize(value)]);
+    return __lcosArr.map(([key,value]) => [key,this._logger.util().deserialize(value)]);
   }
 
   add (obj, co)  {
