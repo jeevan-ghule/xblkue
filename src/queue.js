@@ -10,7 +10,7 @@ module.exports.createQueue = (_logger=null, options={}) => {
     return {
       create: (topic, data) => {
         if(cos.length == 0) {
-          throw Error('Cannot initialize with Log C+orelatrion Object(s)');
+          throw Error('Cannot initialize with Log Corelatrion Object(s)');
         }
         const payload = Payload.createPayload();
         if(_.isPlainObject(data)) {
@@ -22,7 +22,7 @@ module.exports.createQueue = (_logger=null, options={}) => {
         return queue.create(topic, { _payload: payload._serialize() });
       },
       process: (topic, fnc) => {
-        const _process = (job, done) {
+        const _process = (job, done) => {
           const payload = Payload.createPayload(job._payload);
           job['payload'] = payload;
           delete job._payload;
