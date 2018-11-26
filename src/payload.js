@@ -87,7 +87,7 @@ class Payload {
   }
 
   getLcoForObj(obj) {
-    if(obj[_corelId] !== undefined) {
+    if(obj['_corel_id_'] !== undefined) {
       return this._lcos.get(obj[_corelId]);
     }
     return;
