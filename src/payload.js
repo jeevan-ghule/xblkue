@@ -5,11 +5,11 @@ const _serLcos = Symbol('_serLcos_')
 
 class Payload {
   constructor(_logger, _seralizedObject) {
+    this._logger = _logger;
     if(!!_seralizedObject) {
       this._deserialize(_seralizedObject);
     }
     this. _initialize();
-    this._logger = _logger;
   }
 
   _initialize() {
