@@ -82,13 +82,13 @@ class Payload {
 
   _addData(__data) {
     this._data = new Array( ...this._data, 
-      ...__data.filter(obj => obj[_corelId] !== undefined)
+      ...__data.filter(obj => obj['_corel_id_'] !== undefined)
     )
   }
 
   getLcoForObj(obj) {
     if(obj['_corel_id_'] !== undefined) {
-      return this._lcos.get(obj[_corelId]);
+      return this._lcos.get(obj['_corel_id_']);
     }
     return;
   }
