@@ -23,7 +23,7 @@ module.exports.createQueue = (_logger=null, options={}) => {
         return _queue;
       },
       process: (...arg) => {
-        if(arg..length == 0){
+        if(arg.length == 0){
            throw Error('Cannot process the request');
         }
         const fnc = arg[arg.length -1]
