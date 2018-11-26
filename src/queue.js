@@ -5,7 +5,7 @@ const kue = require('kue')
   , assert = require('assert');
 
 module.exports.createQueue = (_logger=null, options={}) => {
-  const logger = _logger,
+  const logger = _logger.logger(),
     queue = kue.createQueue(options);
   
   assert(!!logger, 'Logger not found');
@@ -28,7 +28,11 @@ module.exports.createQueue = (_logger=null, options={}) => {
           
         const job =  queue.create(topic, { _payload: payload._serialize() });
         job.on('enqueue', function() {
-          console.log(job.id);
+          logger(...payload.lcos()).info(`${topic} job has enqueued`,{ 
+            job_id: job.id,
+            topic,
+            data: payload.data()
+           })
         })
         return job;
       },
