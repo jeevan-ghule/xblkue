@@ -1,14 +1,18 @@
 const kue = require('kue')
   , utils = require('./utils')
   , Payload  = require('./payload')
-  , _ = require('lodash');
+  , _ = require('lodash')
+  , assert = require(assert);
 
 module.exports.createQueue = (_logger=null, options={}) => {
   const logger = _logger,
     queue = kue.createQueue(options);
-
+  
+  assert(!!logger, 'Logger not found');
+  
   return (cos) => {
     return {
+
       create: (topic, data) => {
         const payload = Payload.createPayload(_logger);
         if(_.isPlainObject(data) && _.isPlainObject(cos)) {
@@ -22,8 +26,13 @@ module.exports.createQueue = (_logger=null, options={}) => {
           return queue.create(topic);
         }
           
-        return queue.create(topic, { _payload: payload._serialize() });
+        const job =  queue.create(topic, { _payload: payload._serialize() });
+        job.on('enqueue', function() {
+          console.log(job.id);
+        })
+        return job;
       },
+
       process: (...args) => {
         if(args.length == 0){
           process.emitWarning('Cannot process the request');
@@ -40,13 +49,15 @@ module.exports.createQueue = (_logger=null, options={}) => {
         args[args.length -1] = _process;
         return queue.process(...args);
       },
+
       on: (...args) => {
         return queue.on(...args);
       },
+      .0
+
       shutdown: (...args) => {
         return queue.shutdown(...args);
       }
     };
   }
 } 
- 
