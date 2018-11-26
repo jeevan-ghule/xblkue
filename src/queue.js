@@ -2,7 +2,7 @@ const kue = require('kue')
   , utils = require('./utils')
   , Payload  = require('./payload')
   , _ = require('lodash')
-  , assert = require(assert);
+  , assert = require('assert');
 
 module.exports.createQueue = (_logger=null, options={}) => {
   const logger = _logger,
