@@ -43,8 +43,34 @@ module.exports.createQueue = (_logger=null, options={}) => {
         }
         const fnc = args[args.length -1]
           , topic = args[0];
-        const _process = (job, done) => {
-          const payload = Payload.deserializePayload(_logger,job.data._payload);
+
+        const _process = (job, _done) => {
+          const payload = Payload.deserializePayload(_logger,job.data._payload)
+          , done = (err, ...args) => {
+            if(!!err) {
+              logger(...payload.lcos()).error(err,
+              { 
+                job_id: job.id,
+                topic,
+                data: payload.data()
+              },);
+            } else{
+              logger(...payload.lcos()).info(`${topic} job has completed `,{ 
+                job_id: job.id,
+                topic,
+                data: payload.data()
+                results: args
+              });
+            }
+            _done(err, ...args);
+          }
+
+          logger(...payload.lcos()).info(`${topic} job has started`,{ 
+            job_id: job.id,
+            topic,
+            data: payload.data()
+          });
+
           job['data']['payload'] = payload;
           delete job.data._payload;
           return fnc(job, done);
