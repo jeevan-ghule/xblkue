@@ -30,9 +30,12 @@ module.exports.createQueue = (_logger=null, options={}) => {
           logger(...payload.lcos()).info(`${topic} job has enqueued`,{ 
             job_id: job.id,
             topic,
+            event:'enqueue',
             data: payload.data()
-           })
+          });
+          job = null;
         })
+
         return job;
       },
 
@@ -48,16 +51,18 @@ module.exports.createQueue = (_logger=null, options={}) => {
           const payload = Payload.deserializePayload(_logger,job.data._payload)
           , done = (err, ...args) => {
             if(!!err) {
-              logger(...payload.lcos()).error(err,
+              logger(...payload.lcos()).error(err,`${topic} job has faild `,
               { 
                 job_id: job.id,
                 topic,
+                event: 'failed',
                 data: payload.data()
-              },);
+              });
             } else{
               logger(...payload.lcos()).info(`${topic} job has completed `,{ 
                 job_id: job.id,
                 topic,
+                event: 'completed',
                 data: payload.data()
                 results: args
               });
