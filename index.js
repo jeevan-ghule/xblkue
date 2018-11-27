@@ -5,7 +5,7 @@ let logger;
 
 module.exports = {
   init: (_logger=null) =>{
-    if(!!logger) {
+    if(!!_logger) {
       logger = _logger;
     }
   }, 
