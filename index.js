@@ -1,7 +1,7 @@
 const Kue = require('./src/queue')
   , Payload = require('./src/payload');
 
-const logger;
+let logger;
 
 module.exports = {
   init: (_logger=null) =>{
