@@ -63,7 +63,7 @@ module.exports.createQueue = (_logger=null, options={}) => {
                 job_id: job.id,
                 topic,
                 event: 'completed',
-                data: payload.data()
+                data: payload.data(),
                 results: args
               });
             }
