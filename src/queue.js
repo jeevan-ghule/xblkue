@@ -12,7 +12,6 @@ module.exports.createQueue = (_logger=null, options={}) => {
   
   return (cos) => {
     return {
-
       create: (topic, data) => {
         const payload = Payload.createPayload(_logger);
         if(_.isPlainObject(data) && _.isObject(cos)) {
