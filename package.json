@@ -1,6 +1,6 @@
 {
   "name": "@xblockchainlabs/xblkue",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Simple wrapper for Kue producer/consumer to support XBLog's hierarchical logging.",
   "main": "index.js",
   "engines": {
