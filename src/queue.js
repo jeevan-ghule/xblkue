@@ -18,7 +18,7 @@ module.exports.createQueue = (_logger=null, options={}) => {
 
         let sngData = _.isPlainObject(data) ? data: null;
         let sngLco =  _.isObject(cos) ? cos : null;
-        let plurData = utils.isPlainArray(data) && utils.is2DArray(data) ? plurData: null;
+        let plurData = utils.isPlainArray(data) || utils.is2DArray(data) ? data : null;
         let plurCos = utils.isPlainArray(cos) ? cos : null;
 
         if(!!sngData && !!sngLco) {

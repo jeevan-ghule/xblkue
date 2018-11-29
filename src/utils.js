@@ -12,6 +12,7 @@ module.exports = {
     if(Array.isArray(array)) {
       const flatArray = _.flattenDepth(array,1);
       const flat2DArray = _.flattenDepth(array,2);
+
       return flatArray.length == flat2DArray.length;
     }
     return false;
