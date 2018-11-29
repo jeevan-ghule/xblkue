@@ -47,16 +47,19 @@ module.exports.createQueue = (_logger=null, options={}) => {
         }
           
         let job =  queue.create(topic, { _payload: payload._serialize() });
-        job.on('enqueue', function() {
-          logger(...payload.lcos()).info(`${topic} job has enqueued`,{ 
-            job_id: job.id,
-            topic,
-            event:'enqueue',
-            data: payload.data()
-          });
-          job = null;
-        })
-
+        
+          job.on('enqueue', function() {
+            if(!!job) {
+              logger(...payload.lcos()).info(`${topic} job has enqueued`,{ 
+                job_id: job.id,
+                topic,
+                event:'enqueue',
+                data: payload.data()
+              });
+              job = null;
+            }
+          })
+        
         return job;
       },
 
