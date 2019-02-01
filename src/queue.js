@@ -46,7 +46,7 @@ module.exports.createQueue = (_logger=null, options={}) => {
         const _process = (job, done) => {
           const payload = Payload.deserializePayload(_logger,job.data._payload);
           job['data']['payload'] = payload;
-          delete job.data._payload;
+          // delete job.data._payload;
           return fnc(job, done);
         } 
         args[args.length -1] = _process;
