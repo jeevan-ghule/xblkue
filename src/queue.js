@@ -102,7 +102,7 @@ module.exports.createQueue = (_logger=null, options={}) => {
           });
 
           job['data']['payload'] = payload;
-          delete job.data._payload;
+          // delete job.data._payload;
           return fnc(job, done);
         } 
         args[args.length -1] = _process;
