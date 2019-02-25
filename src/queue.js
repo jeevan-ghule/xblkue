@@ -115,7 +115,15 @@ module.exports.createQueue = (_logger=null, options={}) => {
 
       shutdown: (...args) => {
         return queue.shutdown(...args);
-      }
+      },
+
+      getJob: (id,callback) => {
+        return kue.Job.get(id,callback);
+      },
+
+      failed: (callback) => {
+        return queue.failed(callback);
+      },
     };
   }
 } 
