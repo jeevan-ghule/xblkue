@@ -80,7 +80,14 @@ class Payload {
 
   _addData(__data) {
     this._data = new Array( ...this._data, 
-      ...__data.filter(obj => obj['_corel_id_'] !== undefined)
+      ...__data.filter(obj => {
+        if(utils.isPlainArray(obj))
+          return obj.every( o => o['_corel_id_'] !== undefined)
+        else if(_.isObject(obj))
+          return obj['_corel_id_'] !== undefined
+          
+        return false;
+      })
     )
   }
 

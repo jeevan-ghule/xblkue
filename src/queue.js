@@ -1,6 +1,7 @@
 const kue = require('kue')
   , utils = require('./utils')
   , Payload  = require('./payload')
+  , JobProx = require('./job')
   , _ = require('lodash')
   , assert = require('assert');
 
@@ -14,25 +15,51 @@ module.exports.createQueue = (_logger=null, options={}) => {
     return {
       create: (topic, data) => {
         const payload = Payload.createPayload(_logger);
-        if(_.isPlainObject(data) && _.isObject(cos)) {
+
+        let sngData = _.isPlainObject(data) ? data: null;
+        let sngLco =  _.isObject(cos) ? cos : null;
+        let plurData = utils.isPlainArray(data) || utils.is2DArray(data) ? data : null;
+        let plurCos = utils.isPlainArray(cos) ? cos : null;
+
+        if(!!sngData && !!sngLco) {
           payload.add(data, cos);
-        } else if(utils.isPlainArray(data) && utils.isPlainArray(cos)) {
+        } else if(!!plurData && !!plurCos) {
           payload._addLcos(cos);
           payload._addData(data);
         } else {
           //gracefull failing
+          let err;
+          if(!sngData && !plurData) {
+            err = new Error(`Data is not an object or plain array set, 
+              cannot create job for topic: ${topic}`);
+          } else if(!!sngData && !sngLco) {
+            err = new Error(`Expecting LCO to be a singular object, 
+              cannot create job for topic: ${topic}`);
+          } else if(!!plurData && !plurCos) {
+            err = new Error(`Expecting an aray of LCOs , 
+              cannot create job for topic: ${topic}`);
+          } else {
+            err = new Error(`Cannot create job for topic: ${topic}`);
+          }
+          
           process.emitWarning('Cannot process the payload; will create an empty job');
-          return queue.create(topic);
+          return JobProx(err);
         }
           
-        const job =  queue.create(topic, { _payload: payload._serialize() });
-        job.on('enqueue', function() {
-          logger(...payload.lcos()).info(`${topic} job has enqueued`,{ 
-            job_id: job.id,
-            topic,
-            data: payload.data()
-           })
-        })
+        let job =  queue.create(topic, { _payload: payload._serialize() });
+        
+          job.on('enqueue', function() {
+            if(!!job) {
+              logger(...payload.lcos()).info(`${topic} job has enqueued`,{ 
+                job_id: job.id,
+                topic,
+                event:'enqueue',
+                data: payload.data()
+              });
+              job = null;
+            }
+          })
+        
         return job;
       },
 
@@ -43,10 +70,39 @@ module.exports.createQueue = (_logger=null, options={}) => {
         }
         const fnc = args[args.length -1]
           , topic = args[0];
-        const _process = (job, done) => {
-          const payload = Payload.deserializePayload(_logger,job.data._payload);
+
+        const _process = (job, _done) => {
+          const payload = Payload.deserializePayload(_logger,job.data._payload)
+          , done = (err, ...args) => {
+            if(!!err) {
+              logger(...payload.lcos()).error(err,`${topic} job has faild `,
+              { 
+                job_id: job.id,
+                topic,
+                event: 'failed',
+                data: payload.data()
+              });
+            } else{
+              logger(...payload.lcos()).info(`${topic} job has completed `,{ 
+                job_id: job.id,
+                topic,
+                event: 'completed',
+                data: payload.data(),
+                results: args
+              });
+            }
+            _done(err, ...args);
+          }
+
+          logger(...payload.lcos()).info(`${topic} job has started`,{ 
+            job_id: job.id,
+            topic,
+            event: 'start',
+            data: payload.data()
+          });
+
           job['data']['payload'] = payload;
-          delete job.data._payload;
+          // delete job.data._payload;
           return fnc(job, done);
         } 
         args[args.length -1] = _process;
