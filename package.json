@@ -1,6 +1,6 @@
 {
   "name": "xblkue",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simple wrapper for Kue producer/consumer to support XBLog's hierarchical logging.",
   "main": "index.js",
   "engines": {
