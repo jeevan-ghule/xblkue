@@ -124,6 +124,14 @@ module.exports.createQueue = (_logger=null, options={}) => {
       failed: (callback) => {
         return queue.failed(callback);
       },
+
+      rangeByType: (topic, state, startIndex, endIndex, order, callback) => {
+        return kue.Job.rangeByType(topic, state, startIndex, endIndex, order, callback);
+      },
+
+      failedCount: (topic, callback) => {
+        return queue.failedCount(topic, callback);
+      },
     };
   }
 } 
